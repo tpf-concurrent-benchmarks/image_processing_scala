@@ -13,6 +13,6 @@ resolvers += Resolver.file("local-ivy", file(Path.userHome.absolutePath + "/.ivy
 libraryDependencies += "com.github.andyglow" %% "typesafe-config-scala" % "2.0.0"
 libraryDependencies += "org.scala-lang" %% "toolkit" % "0.2.0"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.15" % Test
-libraryDependencies += "common" %% "common" % "0.1.0-SNAPSHOT"
+libraryDependencies += "org.image_processing" %% "common" % "0.1.0-SNAPSHOT"
 
 assembly / assemblyJarName := "manager.jar"
