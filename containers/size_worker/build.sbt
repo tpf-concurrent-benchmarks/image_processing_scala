@@ -14,5 +14,6 @@ libraryDependencies += "com.github.andyglow" %% "typesafe-config-scala" % "2.0.0
 libraryDependencies += "org.scala-lang" %% "toolkit" % "0.2.0"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.15" % Test
 libraryDependencies += "org.image_processing" %% "common" % "0.1.0-SNAPSHOT"
+libraryDependencies += "com.sksamuel.scrimage" % "scrimage-core" % "4.1.1"
 
 assembly / assemblyJarName := "size_worker.jar"
