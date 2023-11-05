@@ -43,7 +43,7 @@ object ImageUtils {
     def resize(sourcePath: String, targetPath: String, width: Int, height: Int, format: ImageFormat = ImageFormat.Same): Unit = {
         val image = loadImage(sourcePath)
         val writer = getWriter(sourcePath, format)
-        val resizedImage = image.scaleTo(width, height)
+        val resizedImage = image.resizeTo(width, height)
         saveImage(resizedImage, targetPath, writer)
     }
 
