@@ -20,8 +20,11 @@ def getConfig: Config = {
 
 @main
 def main(): Unit = {
-    val config = getConfig.getConfig("middleware")
-    val rabbitMq = Rabbit(MiddlewareConfig(config))
-    val queuesConfig = QueuesConfig(config)
-    SizeWorker(queuesConfig).start(rabbitMq)
+    val config = getConfig
+    val middlewareConfigData = config.getConfig("middleware")
+    val resizingConfigData = config.getConfig("worker.size")
+    val queuesConfig = QueuesConfig(middlewareConfigData)
+    val resizingConfig = ResizingConfig(resizingConfigData)
+    val rabbitMq = Rabbit(MiddlewareConfig(middlewareConfigData))
+    SizeWorker(queuesConfig, resizingConfig).start(rabbitMq)
 }

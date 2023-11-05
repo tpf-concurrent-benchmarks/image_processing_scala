@@ -9,18 +9,22 @@ import com.sksamuel.scrimage.nio.PngWriter
 import org.image_processing.common.config.QueuesConfig
 
 object SizeWorker {
-    def apply(queuesConfig: QueuesConfig): SizeWorker = {
+    def apply(queuesConfig: QueuesConfig, resizingConfig: ResizingConfig): SizeWorker = {
         SizeWorker(
             queuesConfig.input,
             queuesConfig.output,
-            queuesConfig.endEvent
+            queuesConfig.endEvent,
+            resizingConfig.targetWidth,
+            resizingConfig.targetHeight
         )
     }
 }
 
 case class SizeWorker(inputQueue: String,
                       outputQueue: String,
-                      endEvent: String) extends BasicTransformer {
+                      endEvent: String,
+                      targetWidth: Int,
+                      targetHeight: Int) extends BasicTransformer {
     override type InputType = FileName
     override type OutputType = FileName
 
@@ -36,7 +40,7 @@ case class SizeWorker(inputQueue: String,
         val formattedFileName = s"${fileNameWithoutExtension}_resized.png"
 
         try {
-            val out = ImmutableImage.loader().fromFile(s"./shared/$fileName").resizeTo(30, 30)
+            val out = ImmutableImage.loader().fromFile(s"./shared/$fileName").resizeTo(targetWidth, targetHeight)
             out.output(pngWriter, s"./shared/$formattedFileName")
             Some(FileName(input.s))
         } catch {
