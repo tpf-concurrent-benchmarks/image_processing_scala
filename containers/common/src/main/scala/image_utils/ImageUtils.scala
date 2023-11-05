@@ -55,10 +55,10 @@ object ImageUtils {
     }
 
     @throws[java.io.IOException]
-    def scale(sourcePath: String, targetPath: String, targetWidth: Int, targetHeight: Int, format: ImageFormat = ImageFormat.Same): Unit = {
+    def scale(sourcePath: String, targetPath: String, width: Int, height: Int, format: ImageFormat = ImageFormat.Same): Unit = {
         val image = loadImage(sourcePath)
         val writer = getWriter(sourcePath, format)
-        val resizedImage = image.scaleTo(targetWidth, targetHeight)
-        saveImage(resizedImage, targetPath, writer)
+        val scaledImage = image.scaleTo(width, height)
+        saveImage(scaledImage, targetPath, writer)
     }
 }
