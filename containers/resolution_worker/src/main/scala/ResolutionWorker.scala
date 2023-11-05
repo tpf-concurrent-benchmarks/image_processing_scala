@@ -1,17 +1,26 @@
 package org.image_processing.resolution_worker
 
-import org.image_processing.common.dto.{FileName, fileNameRW}
-import org.image_processing.common.transformer.BasicTransformer
-import upickle.default
 import com.sksamuel.scrimage
 import com.sksamuel.scrimage.ImmutableImage
 import com.sksamuel.scrimage.nio.PngWriter
+import org.image_processing.common.config.QueuesConfig
+import org.image_processing.common.dto.{FileName, fileNameRW}
+import org.image_processing.common.transformer.BasicTransformer
+import upickle.default
 
-class ResolutionWorker extends BasicTransformer {
-    override val inputQueue: String = "scaling"
-    override val outputQueue: String = "resizing"
-    override val endEvent: String = "end"
+object ResolutionWorker {
+    def apply(queuesConfig: QueuesConfig): ResolutionWorker = {
+        ResolutionWorker(
+            queuesConfig.input,
+            queuesConfig.output,
+            queuesConfig.endEvent
+        )
+    }
+}
 
+case class ResolutionWorker(inputQueue: String,
+                            outputQueue: String,
+                            endEvent: String) extends BasicTransformer {
     override type InputType = FileName
     override type OutputType = FileName
 
@@ -27,7 +36,7 @@ class ResolutionWorker extends BasicTransformer {
         val formattedFileName = s"${fileNameWithoutExtension}_scaled.png"
 
         try {
-            val out = ImmutableImage.loader().fromFile(s"./shared/${fileName}").scaleTo(100, 100)
+            val out = ImmutableImage.loader().fromFile(s"./shared/$fileName").scaleTo(100, 100)
             out.output(pngWriter, s"./shared/${formattedFileName}")
             Some(FileName(formattedFileName))
         } catch {

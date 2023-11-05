@@ -5,11 +5,11 @@ import com.typesafe.config.Config
 
 object QueuesConfig {
     def apply(config: Config): QueuesConfig = {
-        val work = config.getString("queues.work")
-        val results = config.getString("queues.results")
+        val input = config.getString("queues.input")
+        val output = config.getString("queues.output")
         val endEvent = config.getString("endEvent")
 
-        QueuesConfig(work, results, endEvent)
+        QueuesConfig(input, output, endEvent)
     }
 }
 
