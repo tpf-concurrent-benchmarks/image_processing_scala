@@ -5,16 +5,18 @@ import com.newmotion.akka.rabbitmq
 import com.rabbitmq.client.{Channel, Connection}
 import config.MiddlewareConfig
 
+import com.typesafe.config.Config
+
 object Rabbit {
     private val maxConnectionAttempts = 10
 
-    def apply(config: MiddlewareConfig, prefetchCount: Int): Rabbit = {
+    def apply(host: String, port: Int, user: String, password: String, prefetchCount: Int): Rabbit = {
         val factory: rabbitmq.ConnectionFactory = new rabbitmq.ConnectionFactory()
 
-        factory.setHost(config.host)
-        factory.setPort(config.port)
-        factory.setUsername(config.user)
-        factory.setPassword(config.password)
+        factory.setHost(host)
+        factory.setPort(port)
+        factory.setUsername(user)
+        factory.setPassword(password)
 
         var rabbit: Option[Rabbit] = None
         Range.inclusive(1, maxConnectionAttempts).takeWhile(attempt => {
@@ -33,6 +35,10 @@ object Rabbit {
             case Some(r) => r
             case None => throw new Exception("Failed to connect to RabbitMQ")
         }
+    }
+
+    def apply(config: MiddlewareConfig, prefetchCount: Int): Rabbit = {
+        Rabbit.apply(config.host, config.port, config.user, config.password, prefetchCount)
     }
 
     def apply(config: MiddlewareConfig): Rabbit = {

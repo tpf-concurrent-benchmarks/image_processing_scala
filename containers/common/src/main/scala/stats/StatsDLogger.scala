@@ -1,7 +1,7 @@
 package org.image_processing.common
 package stats
 
-import com.timgroup.statsd.{StatsDClient, NonBlockingStatsDClient}
+import com.timgroup.statsd.{NonBlockingStatsDClient, StatsDClient}
 import config.MetricsConfig
 
 object StatsDLogger extends MetricsLogger {

@@ -1,17 +1,26 @@
 package org.image_processing.format_worker
 
-import org.image_processing.common.dto.{FileName, fileNameRW}
-import org.image_processing.common.transformer.BasicTransformer
-import upickle.default
 import com.sksamuel.scrimage
 import com.sksamuel.scrimage.ImmutableImage
 import com.sksamuel.scrimage.nio.PngWriter
+import org.image_processing.common.config.QueuesConfig
+import org.image_processing.common.dto.{FileName, fileNameRW}
+import org.image_processing.common.transformer.BasicTransformer
+import upickle.default
 
-class FormatWorker extends BasicTransformer {
-    override val inputQueue: String = "formatting"
-    override val outputQueue: String = "scaling"
-    override val endEvent: String = "end"
+object FormatWorker {
+    def apply(queuesConfig: QueuesConfig): FormatWorker = {
+        FormatWorker(
+            queuesConfig.input,
+            queuesConfig.output,
+            queuesConfig.endEvent
+        )
+    }
+}
 
+case class FormatWorker(inputQueue: String,
+                        outputQueue: String,
+                        endEvent: String) extends BasicTransformer {
     override type InputType = FileName
     override type OutputType = FileName
 
@@ -27,8 +36,8 @@ class FormatWorker extends BasicTransformer {
         val formattedFileName = s"${fileNameWithoutExtension}_formatted.png"
 
         try {
-            val out = ImmutableImage.loader().fromFile(s"./shared/${fileName}")
-            out.output(pngWriter, s"./shared/${formattedFileName}")
+            val out = ImmutableImage.loader().fromFile(s"./shared/$fileName")
+            out.output(pngWriter, s"./shared/$formattedFileName")
 
             Some(FileName(formattedFileName))
         } catch {
