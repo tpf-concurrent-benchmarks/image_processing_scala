@@ -60,11 +60,15 @@ down_graphite:
 setup: init compile build build_rabbitmq
 .PHONY: setup
 
-deploy: # remove build down_rabbitmq down_graphite
+_deploy:
 	mkdir -p graphite
 	mkdir -p grafana_config
 	mkdir -p shared
 	MY_UID="$(shell id -u)" MY_GID="$(shell id -g)" docker stack deploy -c docker-compose.yaml ip_scala
+.PHONY: _deploy
+
+deploy: remove build down_rabbitmq down_graphite
+	make _deploy
 .PHONY: deploy
 
 remove:
