@@ -5,11 +5,11 @@ import com.typesafe.config.Config
 
 object MetricsConfig {
     def apply(config: Config): MetricsConfig = {
-        MetricsConfig(
-            host = config.getString("host"),
-            port = config.getInt("port"),
-            prefix = config.getString("prefix")
-        )
+        val host = config.getString("host")
+        val port = config.getInt("port")
+        val prefix = config.getString("prefix")
+        
+        MetricsConfig(host, port, prefix)
     }
 }
 
