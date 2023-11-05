@@ -3,10 +3,8 @@ package org.image_processing.size_worker
 import org.image_processing.common.dto.{FileName, fileNameRW}
 import org.image_processing.common.transformer.BasicTransformer
 import upickle.default
-import com.sksamuel.scrimage
-import com.sksamuel.scrimage.ImmutableImage
-import com.sksamuel.scrimage.nio.PngWriter
 import org.image_processing.common.config.QueuesConfig
+import org.image_processing.common.image_utils.{ImageFormat, ImageUtils}
 
 object SizeWorker {
     def apply(queuesConfig: QueuesConfig, resizingConfig: ResizingConfig): SizeWorker = {
@@ -31,21 +29,20 @@ case class SizeWorker(inputQueue: String,
     override implicit val reader: default.Reader[InputType] = fileNameRW
     override implicit val writer: default.Writer[OutputType] = fileNameRW
 
-    private val pngWriter: PngWriter = scrimage.nio.PngWriter.NoCompression
-
     override def transform(input: InputType): Option[OutputType] = {
         println(s"Resizing ${input.s}")
-        val fileName = input.s
-        val fileNameWithoutExtension = fileName.split('.').head
-        val formattedFileName = s"${fileNameWithoutExtension}_resized.png"
+        val sourceFileName = input.s
+        val sourceFileNameWithoutExtension = sourceFileName.split('.').head
+        val targetFileName = s"${sourceFileNameWithoutExtension}_resized.png"
+        val sourceFilePath = s"./shared/$sourceFileName"
+        val targetFilePath = s"./shared/$targetFileName"
 
         try {
-            val out = ImmutableImage.loader().fromFile(s"./shared/$fileName").resizeTo(targetWidth, targetHeight)
-            out.output(pngWriter, s"./shared/$formattedFileName")
-            Some(FileName(input.s))
+            ImageUtils.resize(sourceFilePath, targetFilePath, targetWidth, targetHeight, ImageFormat.Png())
+            Some(FileName(targetFileName))
         } catch {
-            case e: java.io.IOException =>
-                println(s"Error resizing ${input.s} - ${e.getMessage}")
+            case e: java.io.FileNotFoundException =>
+                println(s"Input file $sourceFilePath not found - skipping")
                 None
         }
     }
