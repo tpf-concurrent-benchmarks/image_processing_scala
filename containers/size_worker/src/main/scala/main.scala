@@ -13,7 +13,7 @@ def getConfig: Config = {
         val config = ConfigFactory
             .parseString(s"metrics.prefix: ${System.getenv("NODE_ID")}")
             .withFallback(ConfigFactory.load("size_worker.conf"))
-        StatsDLogger.init(MetricsConfig(config.getConfig("middleware")))
+        StatsDLogger.init(MetricsConfig(config.getConfig("metrics")))
         config
     }
 }
