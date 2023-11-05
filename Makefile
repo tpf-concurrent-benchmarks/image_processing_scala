@@ -3,7 +3,7 @@ init:
 .PHONY: init
 
 CONTAINERS = $(shell ls ./containers)
-NODES = $(shell ls ./containers | grep -v common)
+NODES = $(shell ls ./containers | grep -v common | grep -v rabbitmq)
 
 compile:
 	for container in $(CONTAINERS); do \
@@ -63,6 +63,7 @@ setup: init compile build build_rabbitmq
 deploy: # remove build down_rabbitmq down_graphite
 	mkdir -p graphite
 	mkdir -p grafana_config
+	mkdir -p shared
 	MY_UID="$(shell id -u)" MY_GID="$(shell id -g)" docker stack deploy -c docker-compose.yaml ip_scala
 .PHONY: deploy
 
@@ -97,6 +98,21 @@ run_manager_tests:
 	cd ./containers/manager && sbt test
 	cd ../..
 .PHONY: run_manager_tests
+
+run_format_worker_local:
+	cd ./containers/format_worker && LOCAL=true sbt -J-Xmx500M run
+	cd ../..
+.PHONY: run_format_worker_local
+
+run_resolution_worker_local:
+	cd ./containers/resolution_worker && LOCAL=true sbt -J-Xmx500M run
+	cd ../..
+.PHONY: run_resolution_worker_local
+
+run_size_worker_local:
+	cd ./containers/size_worker && LOCAL=true sbt -J-Xmx500M run
+	cd ../..
+.PHONY: run_size_worker_local
 
 common_publish_local:
 	cd ./containers/common && sbt publishLocal && cd ../..
