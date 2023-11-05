@@ -1,0 +1,75 @@
+{
+  "users": [
+    {
+      "name": "guest",
+      "password": "guest",
+      "tags": [
+        "administrator"
+      ]
+    }
+  ],
+  "vhosts": [
+    {
+      "name": "/"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "guest",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "policies": [],
+  "queues": [
+    {
+      "name": "formatting",
+      "vhost": "/",
+      "durable": false,
+      "auto_delete": false,
+      "arguments": {
+        "x-max-length": 100,
+        "x-overflow": "reject-publish"
+      }
+    },
+    {
+      "name": "scaling",
+      "vhost": "/",
+      "durable": false,
+      "auto_delete": false,
+      "arguments": {
+        "x-max-length": 100,
+        "x-overflow": "reject-publish"
+      }
+    },
+    {
+      "name": "resizing",
+      "vhost": "/",
+      "durable": false,
+      "auto_delete": false,
+      "arguments": {
+        "x-max-length": 100,
+        "x-overflow": "reject-publish"
+      }
+    },
+    {
+      "name": "results",
+      "vhost": "/",
+      "durable": false,
+      "auto_delete": false,
+      "arguments": {}
+    }],
+    "exchanges": [
+      {
+        "name": "end",
+        "vhost": "/",
+        "type": "fanout",
+        "durable": false,
+        "auto_delete": false,
+        "internal": false,
+        "arguments": {}
+      }
+    ]
+}
