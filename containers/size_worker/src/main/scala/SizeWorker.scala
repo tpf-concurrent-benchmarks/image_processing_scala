@@ -6,12 +6,21 @@ import upickle.default
 import com.sksamuel.scrimage
 import com.sksamuel.scrimage.ImmutableImage
 import com.sksamuel.scrimage.nio.PngWriter
+import org.image_processing.common.config.QueuesConfig
 
-class SizeWorker extends BasicTransformer {
-    override val inputQueue: String = "resizing"
-    override val outputQueue: String = "results"
-    override val endEvent: String = "end"
+object SizeWorker {
+    def apply(queuesConfig: QueuesConfig): SizeWorker = {
+        SizeWorker(
+            queuesConfig.input,
+            queuesConfig.output,
+            queuesConfig.endEvent
+        )
+    }
+}
 
+case class SizeWorker(inputQueue: String,
+                      outputQueue: String,
+                      endEvent: String) extends BasicTransformer {
     override type InputType = FileName
     override type OutputType = FileName
 
