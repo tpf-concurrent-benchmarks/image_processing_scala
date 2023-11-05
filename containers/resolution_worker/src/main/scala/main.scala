@@ -1,7 +1,7 @@
 package org.image_processing.resolution_worker
 
 import com.typesafe.config.{Config, ConfigFactory}
-import org.image_processing.common.config.{FileConfigReader, MetricsConfig, MiddlewareConfig, QueuesConfig}
+import org.image_processing.common.config.{MetricsConfig, MiddlewareConfig, QueuesConfig}
 import org.image_processing.common.middleware.Rabbit
 import org.image_processing.common.stats.StatsDLogger
 
@@ -20,8 +20,11 @@ def getConfig: Config = {
 
 @main
 def main(): Unit = {
-    val config = getConfig.getConfig("middleware")
-    val rabbitMq = Rabbit(MiddlewareConfig(config))
-    val queuesConfig = QueuesConfig(config)
-    ResolutionWorker(queuesConfig).start(rabbitMq)
+    val config = getConfig
+    val middlewareConfigData = config.getConfig("middleware")
+    val resizingConfigData = config.getConfig("worker.scale")
+    val queuesConfig = QueuesConfig(middlewareConfigData)
+    val resizingConfig = ScalingConfig(resizingConfigData)
+    val rabbitMq = Rabbit(MiddlewareConfig(middlewareConfigData))
+    ResolutionWorker(queuesConfig, resizingConfig).start(rabbitMq)
 }

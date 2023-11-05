@@ -9,18 +9,22 @@ import org.image_processing.common.transformer.BasicTransformer
 import upickle.default
 
 object ResolutionWorker {
-    def apply(queuesConfig: QueuesConfig): ResolutionWorker = {
+    def apply(queuesConfig: QueuesConfig, scalingConfig: ScalingConfig): ResolutionWorker = {
         ResolutionWorker(
             queuesConfig.input,
             queuesConfig.output,
-            queuesConfig.endEvent
+            queuesConfig.endEvent,
+            scalingConfig.targetWidth,
+            scalingConfig.targetHeight
         )
     }
 }
 
 case class ResolutionWorker(inputQueue: String,
                             outputQueue: String,
-                            endEvent: String) extends BasicTransformer {
+                            endEvent: String,
+                            targetWidth: Int,
+                            targetHeight: Int) extends BasicTransformer { 
     override type InputType = FileName
     override type OutputType = FileName
 
@@ -36,8 +40,8 @@ case class ResolutionWorker(inputQueue: String,
         val formattedFileName = s"${fileNameWithoutExtension}_scaled.png"
 
         try {
-            val out = ImmutableImage.loader().fromFile(s"./shared/$fileName").scaleTo(100, 100)
-            out.output(pngWriter, s"./shared/${formattedFileName}")
+            val out = ImmutableImage.loader().fromFile(s"./shared/$fileName").scaleTo(targetWidth, targetHeight)
+            out.output(pngWriter, s"./shared/$formattedFileName")
             Some(FileName(formattedFileName))
         } catch {
             case e: java.io.IOException =>
