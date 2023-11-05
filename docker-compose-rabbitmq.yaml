@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+  rabbitmq:
+    image: rostov_rabbitmq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    volumes:
+      - type: bind
+        source: ./containers/rabbitmq/definitions.json
+        target: /definitions.json
+        read_only: true
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 50s

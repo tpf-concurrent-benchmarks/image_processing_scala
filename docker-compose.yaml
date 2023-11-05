@@ -44,6 +44,11 @@ services:
     ports:
       - "15672:15672"
       - "5672:5672"
+    volumes:
+      - type: bind
+        source: ./containers/rabbitmq/definitions.json
+        target: /definitions.json
+        read_only: true
     healthcheck:
       test: rabbitmq-diagnostics check_port_connectivity
       interval: 5s
@@ -57,18 +62,22 @@ services:
       - rabbitmq
       - graphite
     volumes:
-      - "./containers/worker/src:/app/src"
-      - "./containers/format_worker/build.sbt:/app/build.sbt"
-      - "./containers/format_worker/project/build.properties:/app/project/build.properties"
-      - "./containers/format_worker/project/plugins.sbt:/app/project/plugins.sbt"
-      - "~/.ivy2:/root/.ivy2"
+      - "./containers/format_worker/src:/app/src:ro"
+      - "./containers/format_worker/build.sbt:/app/build.sbt:ro"
+      - "./containers/format_worker/project/build.properties:/app/project/build.properties:ro"
+      - "./containers/format_worker/project/plugins.sbt:/app/project/plugins.sbt:ro"
+      - "~/.ivy2:/root/.ivy2:ro"
+      - type: bind
+        source: ./shared
+        target: /app/shared
+        read_only: false
     deploy:
       replicas: 2
       restart_policy:
         condition: none
     environment:
       - LOCAL=${LOCAL}
-      - NODE_ID=worker_{{.Task.Slot}}
+      - NODE_ID=format_worker_{{.Task.Slot}}
 
   resolution_worker:
     image: image_processing_scala_resolution_worker
@@ -76,18 +85,22 @@ services:
       - rabbitmq
       - graphite
     volumes:
-      - "./containers/worker/src:/app/src"
+      - "./containers/resolution_worker/src:/app/src"
       - "./containers/resolution_worker/build.sbt:/app/build.sbt"
       - "./containers/resolution_worker/project/build.properties:/app/project/build.properties"
       - "./containers/resolution_worker/project/plugins.sbt:/app/project/plugins.sbt"
       - "~/.ivy2:/root/.ivy2"
+      - type: bind
+        source: ./shared
+        target: /app/shared
+        read_only: false
     deploy:
       replicas: 2
       restart_policy:
         condition: none
     environment:
       - LOCAL=${LOCAL}
-      - NODE_ID=worker_{{.Task.Slot}}
+      - NODE_ID=resolution_worker_{{.Task.Slot}}
 
   size_worker:
     image: image_processing_scala_size_worker
@@ -95,18 +108,22 @@ services:
       - rabbitmq
       - graphite
     volumes:
-      - "./containers/worker/src:/app/src"
+      - "./containers/size_worker/src:/app/src"
       - "./containers/size_worker/build.sbt:/app/build.sbt"
       - "./containers/size_worker/project/build.properties:/app/project/build.properties"
       - "./containers/size_worker/project/plugins.sbt:/app/project/plugins.sbt"
       - "~/.ivy2:/root/.ivy2"
+      - type: bind
+        source: ./shared
+        target: /app/shared
+        read_only: false
     deploy:
       replicas: 2
       restart_policy:
         condition: none
     environment:
       - LOCAL=${LOCAL}
-      - NODE_ID=worker_{{.Task.Slot}}
+      - NODE_ID=size_worker_{{.Task.Slot}}
 
   manager:
     image: image_processing_scala_manager
