@@ -46,4 +46,11 @@ object ImageUtils {
         val resizedImage = image.scaleTo(width, height)
         saveImage(resizedImage, targetPath, writer)
     }
+
+    @throws[java.io.IOException]
+    def format(sourcePath: String, targetPath: String, format: ImageFormat): Unit = {
+        val image = loadImage(sourcePath)
+        val writer = getWriter(sourcePath, format)
+        saveImage(image, targetPath, writer)
+    }
 }
