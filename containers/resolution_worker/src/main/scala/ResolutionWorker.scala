@@ -1,10 +1,8 @@
 package org.image_processing.resolution_worker
 
-import com.sksamuel.scrimage
-import com.sksamuel.scrimage.ImmutableImage
-import com.sksamuel.scrimage.nio.PngWriter
 import org.image_processing.common.config.QueuesConfig
 import org.image_processing.common.dto.{FileName, fileNameRW}
+import org.image_processing.common.image_utils.{ImageFormat, ImageUtils}
 import org.image_processing.common.transformer.BasicTransformer
 import upickle.default
 
@@ -24,28 +22,27 @@ case class ResolutionWorker(inputQueue: String,
                             outputQueue: String,
                             endEvent: String,
                             targetWidth: Int,
-                            targetHeight: Int) extends BasicTransformer { 
+                            targetHeight: Int) extends BasicTransformer {
     override type InputType = FileName
     override type OutputType = FileName
 
     override implicit val reader: default.Reader[InputType] = fileNameRW
     override implicit val writer: default.Writer[OutputType] = fileNameRW
 
-    private val pngWriter: PngWriter = scrimage.nio.PngWriter.NoCompression
-
     override def transform(input: InputType): Option[OutputType] = {
         println(s"Scaling ${input.s}")
-        val fileName = input.s
-        val fileNameWithoutExtension = fileName.split('.').head
-        val formattedFileName = s"${fileNameWithoutExtension}_scaled.png"
+        val sourceFileName = input.s
+        val sourceFileNameWithoutExtension = sourceFileName.split('.').head
+        val targetFileName = s"${sourceFileNameWithoutExtension}_scaled.png"
+        val sourceFilePath = s"./shared/$sourceFileName"
+        val targetFilePath = s"./shared/$targetFileName"
 
         try {
-            val out = ImmutableImage.loader().fromFile(s"./shared/$fileName").scaleTo(targetWidth, targetHeight)
-            out.output(pngWriter, s"./shared/$formattedFileName")
-            Some(FileName(formattedFileName))
+            ImageUtils.scale(sourceFilePath, targetFilePath, targetWidth, targetHeight, ImageFormat.Png())
+            Some(FileName(targetFileName))
         } catch {
-            case e: java.io.IOException =>
-                println(s"Error scaling ${input.s} - ${e.getMessage}")
+            case e: java.io.FileNotFoundException =>
+                println(s"Input file $sourceFilePath not found - skipping")
                 None
         }
     }
