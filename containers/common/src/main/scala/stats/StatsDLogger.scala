@@ -6,21 +6,17 @@ import config.MetricsConfig
 
 object StatsDLogger extends MetricsLogger {
     var client: Option[StatsDClient] = None
-    val maxConnectionAttempts = 10
+    private val maxConnectionAttempts = 10
+    private val sleepTimeBetweenConnectionAttempts = 5000
 
     def init(config: MetricsConfig): Unit = {
         println(s"Initializing StatsDLogger with prefix: ${config.prefix} in ${config.host}:${config.port}")
-        Range.inclusive(1, maxConnectionAttempts).takeWhile(attempt => {
-            try {
-                client = Some(new NonBlockingStatsDClient(config.prefix, config.host, config.port))
-                false
-            } catch {
-                case _: Exception =>
-                    println(s"Failed to connect to StatsD. Attempt $attempt/$maxConnectionAttempts")
-                    Thread.sleep(5000)
-                    true
-            }
-        })
+        client = retry(
+            new NonBlockingStatsDClient(config.prefix, config.host, config.port),
+            maxConnectionAttempts,
+            sleepTimeBetweenConnectionAttempts,
+            "Failed to connect to StatsD"
+        )
         client match {
             case Some(_) => println("StatsDLogger initialized")
             case None => throw new Exception("Failed to connect to StatsD")

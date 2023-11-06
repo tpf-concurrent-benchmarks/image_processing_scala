@@ -19,7 +19,7 @@ trait BasicTransformer {
 
     def transform(input: InputType): Option[OutputType]
 
-    def start(middleware: MessageQueue): Unit = {
+    private def setUpConsumer(middleware: MessageQueue): Unit = {
         middleware.setConsumer(inputQueue, input => {
             val convertedInput = read[InputType](input)
 
@@ -30,6 +30,10 @@ trait BasicTransformer {
             })
             true
         })
+    }
+
+    def start(middleware: MessageQueue): Unit = {
+        setUpConsumer(middleware)
         val stopPromise = Promise[Unit]()
 
         middleware.subscribe(endEvent, end => {

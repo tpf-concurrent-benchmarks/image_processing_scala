@@ -5,34 +5,25 @@ import com.newmotion.akka.rabbitmq
 import com.rabbitmq.client.{Channel, Connection}
 import config.MiddlewareConfig
 
-import com.typesafe.config.Config
-
 object Rabbit {
     private val maxConnectionAttempts = 10
+    private val waitTimeBetweenConnectionAttempts = 5000
 
     def apply(host: String, port: Int, user: String, password: String, prefetchCount: Int): Rabbit = {
         val factory: rabbitmq.ConnectionFactory = new rabbitmq.ConnectionFactory()
-
+        
         factory.setHost(host)
         factory.setPort(port)
         factory.setUsername(user)
         factory.setPassword(password)
 
-        var rabbit: Option[Rabbit] = None
-        Range.inclusive(1, maxConnectionAttempts).takeWhile(attempt => {
-            try {
-                val connection: rabbitmq.Connection = factory.newConnection()
-                rabbit = Some(new Rabbit(connection, prefetchCount))
-                false
-            } catch {
-                case _: Exception =>
-                    println(s"Failed to connect to RabbitMQ. Attempt $attempt/$maxConnectionAttempts")
-                    Thread.sleep(5000)
-                    true
-            }
-        })
-        rabbit match {
-            case Some(r) => r
+        val connectionOpt = retry(
+            factory.newConnection(),
+            maxConnectionAttempts,
+            waitTimeBetweenConnectionAttempts,
+            "Failed to connect to RabbitMQ")
+        connectionOpt match {
+            case Some(connection) => new Rabbit(connection, prefetchCount)
             case None => throw new Exception("Failed to connect to RabbitMQ")
         }
     }
@@ -56,13 +47,12 @@ class Rabbit(connection: rabbitmq.Connection, prefetchCount: Int) extends Messag
     }
 
     private def _produce(queue: String, message: Array[Byte], resendWaitTimeMS:Long = 1000, retries:Int=5): Unit = {
-        Range.inclusive(1, retries).takeWhile(attempt => {
+        (1 to retries).takeWhile(attempt => {
             channel.basicPublish("", queue, null, message)
 
             if (channel.waitForConfirms()) {
                 false // success
             } else {
-                // if (attempt == retries) throw new Exception("Failed to publish message to RabbitMQ")
                 Thread.sleep(resendWaitTimeMS)
                 true // retry
             }
