@@ -24,5 +24,5 @@ def main(): Unit = {
     val config = getConfig.getConfig("middleware")
     val rabbitMq = Rabbit(MiddlewareConfig(config))
     val queuesConfig = QueuesConfig(config)
-    FormatWorker(queuesConfig).start(rabbitMq)
+    MeasuredFormatWorker(queuesConfig).start(rabbitMq)
 }
