@@ -36,8 +36,6 @@ services:
       - "/sys:/sys:ro"
       - "/var/lib/docker/:/var/lib/docker:ro"
       - "/dev/disk/:/dev/disk:ro"
-    devices:
-      - "/dev/kmsg"
 
   rabbitmq:
     image: rostov_rabbitmq
@@ -136,6 +134,10 @@ services:
       - "./containers/manager/project/build.properties:/app/project/build.properties"
       - "./containers/manager/project/plugins.sbt:/app/project/plugins.sbt"
       - "~/.ivy2:/root/.ivy2"
+      - type: bind
+        source: ./shared
+        target: /app/shared
+        read_only: false
     deploy:
       restart_policy:
         condition: none
