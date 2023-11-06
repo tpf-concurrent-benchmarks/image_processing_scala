@@ -26,5 +26,5 @@ def main(): Unit = {
     val queuesConfig = QueuesConfig(middlewareConfigData)
     val resizingConfig = ScalingConfig(resizingConfigData)
     val rabbitMq = Rabbit(MiddlewareConfig(middlewareConfigData))
-    ResolutionWorker(queuesConfig, resizingConfig).start(rabbitMq)
+    MeasuredResolutionWorker(queuesConfig, resizingConfig).start(rabbitMq)
 }
