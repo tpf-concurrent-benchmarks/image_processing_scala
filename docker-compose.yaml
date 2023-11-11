@@ -75,7 +75,7 @@ services:
         condition: none
     environment:
       - LOCAL=${LOCAL}
-      - NODE_ID=format_worker_{{.Task.Slot}}
+      - NODE_ID=format.worker_{{.Task.Slot}}
 
   resolution_worker:
     image: image_processing_scala_resolution_worker
@@ -98,7 +98,7 @@ services:
         condition: none
     environment:
       - LOCAL=${LOCAL}
-      - NODE_ID=resolution_worker_{{.Task.Slot}}
+      - NODE_ID=resolution.worker_{{.Task.Slot}}
 
   size_worker:
     image: image_processing_scala_size_worker
@@ -121,7 +121,7 @@ services:
         condition: none
     environment:
       - LOCAL=${LOCAL}
-      - NODE_ID=size_worker_{{.Task.Slot}}
+      - NODE_ID=size.worker_{{.Task.Slot}}
 
   manager:
     image: image_processing_scala_manager
@@ -147,4 +147,4 @@ services:
 
 volumes:
   grafana_config:
-    driver: local
+    external: true
