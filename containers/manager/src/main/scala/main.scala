@@ -3,7 +3,9 @@ package org.image_processing.manager
 import com.typesafe.config.{Config, ConfigFactory}
 import org.image_processing.common.config.{MetricsConfig, MiddlewareConfig, QueuesConfig}
 import org.image_processing.common.middleware.{MessageQueue, Rabbit}
-import org.image_processing.common.stats.StatsDLogger
+import org.image_processing.common.stats.{StatsDLogger, getLogger}
+
+import scala.concurrent.Promise
 
 def getConfig: Config = {
   if (System.getenv("LOCAL") == "true") {
@@ -30,12 +32,35 @@ def getImagesBasename(imagesFolder: String): List[String] = {
     images.map(_.getName).toList
 }
 
-def sendWork(middleware: MessageQueue, imagesFolder: String): Unit = {
+def sendWork(middleware: MessageQueue, imagesFolder: String): Int = {
     val imagesBasename = getImagesBasename(imagesFolder)
-        imagesBasename.foreach { imageBasename =>
-            val imageBasenameWithQuotes = "\"" + imageBasename + "\""
-            middleware.produce("formatting", imageBasenameWithQuotes.getBytes("UTF-8"))
-        }
+    imagesBasename.foreach { imageBasename =>
+        val imageBasenameWithQuotes = "\"" + imageBasename + "\""
+        middleware.produce("formatting", imageBasenameWithQuotes.getBytes("UTF-8"))
+    }
+    imagesBasename.size
+}
+
+def receiveResults(middleware: MessageQueue, resultsQueue: String, endEvent: String, resultsToWait: Int): Unit = {
+    var resultsReceived = 0
+    val allResultsReceived = Promise[Unit]()
+    println(s"Waiting for $resultsToWait results")
+
+    while (resultsReceived < resultsToWait) {
+        middleware.setConsumer(resultsQueue, (message: Array[Byte]) => {
+            val messageString = new String(message, "UTF-8")
+            resultsReceived += 1
+            if (resultsReceived == resultsToWait) {
+                println(s"Got all results ($resultsReceived)")
+                allResultsReceived.success(())
+            }
+            true
+        })
+    }
+    middleware.startConsuming(Some(allResultsReceived.future))
+
+    middleware.publish(endEvent, "end".getBytes("UTF-8"))
+    middleware.close()
 }
 
 @main
@@ -43,5 +68,12 @@ def main(): Unit = {
     val config = getConfig.getConfig("middleware")
     val rabbitMq = Rabbit(MiddlewareConfig(config))
     val queuesConfig = QueuesConfig(config)
-    sendWork(rabbitMq, "./shared")
+
+    val startTime = System.currentTimeMillis()
+    val resultsToWait = sendWork(rabbitMq, "./shared")
+
+    receiveResults(rabbitMq, queuesConfig.input, queuesConfig.endEvent, resultsToWait)
+    val endTime = System.currentTimeMillis()
+    println(s"Total time: ${endTime - startTime} ms")
+    getLogger.gauge("completion_time", endTime - startTime)
 }
