@@ -6,7 +6,7 @@ import com.rabbitmq.client.{Channel, Connection}
 import config.MiddlewareConfig
 
 object Rabbit {
-    private val maxConnectionAttempts = 10
+    private val maxConnectionAttempts = 20
     private val waitTimeBetweenConnectionAttempts = 5000
 
     def apply(host: String, port: Int, user: String, password: String, prefetchCount: Int): Rabbit = {
