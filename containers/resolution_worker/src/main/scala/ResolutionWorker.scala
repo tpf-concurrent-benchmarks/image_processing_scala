@@ -30,19 +30,20 @@ case class ResolutionWorker(inputQueue: String,
     override implicit val writer: default.Writer[OutputType] = fileNameRW
 
     override def transform(input: InputType): Option[OutputType] = {
-        println(s"Scaling ${input.s}")
-        val sourceFileName = input.s
-        val sourceFileNameWithoutExtension = sourceFileName.split('.').head
-        val targetFileName = s"${sourceFileNameWithoutExtension}_scaled.png"
-        val sourceFilePath = s"./shared/output/$sourceFileName"
-        val targetFilePath = s"./shared/output/$targetFileName"
+        val sourcePath = input.path
+        val sourceName = input.name
+        val sourceFileName = s"$sourcePath/$sourceName"
+        println(s"Scaling $sourceFileName")
+
+        val targetPath = "./shared/scaled"
+        val targetFileName = s"$targetPath/$sourceName"
 
         try {
-            ImageUtils.scale(sourceFilePath, targetFilePath, targetWidth, targetHeight, ImageFormat.Png())
-            Some(FileName(targetFileName))
+            ImageUtils.scale(sourceFileName, targetFileName, targetWidth, targetHeight, ImageFormat.Png())
+            Some(FileName(targetPath, sourceName))
         } catch {
             case e: java.io.FileNotFoundException =>
-                println(s"Input file $sourceFilePath not found - skipping")
+                println(s"Input file $sourceFileName not found - skipping")
                 None
         }
     }

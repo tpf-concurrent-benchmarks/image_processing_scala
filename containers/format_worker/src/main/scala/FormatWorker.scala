@@ -26,19 +26,22 @@ case class FormatWorker(inputQueue: String,
     override implicit val writer: default.Writer[OutputType] = fileNameRW
 
     override def transform(input: InputType): Option[OutputType] = {
-        println(s"Formatting ${input.s}")
-        val sourceFileName = input.s
-        val sourceFileNameWithoutExtension = sourceFileName.split('.').head
-        val targetFileName = s"${sourceFileNameWithoutExtension}_formatted.png"
-        val sourceFilePath = s"./shared/input/$sourceFileName"
-        val targetFilePath = s"./shared/output/$targetFileName"
+        val sourcePath = input.path
+        val sourceName = input.name
+        val sourceFileName = s"$sourcePath/$sourceName"
+        println(s"Formatting $sourceFileName")
+
+        val targetPath = "./shared/formatted"
+        val sourceFileNameWithoutExtension = sourceName.split('.').head
+        val targetName = s"$sourceFileNameWithoutExtension.png"
+        val targetFileName = s"$targetPath/$targetName"
 
         try {
-            ImageUtils.format(sourceFilePath, targetFilePath, ImageFormat.Png())
-            Some(FileName(targetFileName))
+            ImageUtils.format(sourceFileName, targetFileName, ImageFormat.Png())
+            Some(FileName(targetPath, targetName))
         } catch {
             case e: java.io.FileNotFoundException =>
-                println(s"Input file $sourceFilePath not found - skipping")
+                println(s"Input file $sourceFileName not found - skipping")
                 None
         }
     }

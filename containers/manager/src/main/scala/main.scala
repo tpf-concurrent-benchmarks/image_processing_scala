@@ -1,11 +1,16 @@
 package org.image_processing.manager
 
 import com.typesafe.config.{Config, ConfigFactory}
+import upickle.default
+import org.image_processing.common.dto.{FileName, fileNameRW}
 import org.image_processing.common.config.{MetricsConfig, MiddlewareConfig, QueuesConfig}
 import org.image_processing.common.middleware.{MessageQueue, Rabbit}
 import org.image_processing.common.stats.{StatsDLogger, getLogger}
 
 import scala.concurrent.Promise
+
+implicit val reader: default.Reader[FileName] = fileNameRW
+implicit val writer: default.Writer[FileName] = fileNameRW
 
 def getConfig: Config = {
   if (System.getenv("LOCAL") == "true") {
@@ -35,8 +40,10 @@ def getImagesBasename(imagesFolder: String): List[String] = {
 def sendWork(middleware: MessageQueue, imagesFolder: String): Int = {
     val imagesBasename = getImagesBasename(imagesFolder)
     imagesBasename.foreach { imageBasename =>
-        val imageBasenameWithQuotes = "\"" + imageBasename + "\""
-        middleware.produce("formatting", imageBasenameWithQuotes.getBytes("UTF-8"))
+        val sourcePath = "./shared/input"
+        val fileName = FileName(sourcePath, imageBasename)
+        val outputString = default.write(fileName)
+        middleware.produce("formatting", outputString.getBytes("UTF-8"))
     }
     imagesBasename.size
 }
@@ -49,6 +56,7 @@ def receiveResults(middleware: MessageQueue, resultsQueue: String, endEvent: Str
     while (resultsReceived < resultsToWait) {
         middleware.setConsumer(resultsQueue, (message: Array[Byte]) => {
             val messageString = new String(message, "UTF-8")
+
             resultsReceived += 1
             if (resultsReceived == resultsToWait) {
                 println(s"Got all results ($resultsReceived)")

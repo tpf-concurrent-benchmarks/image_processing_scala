@@ -54,13 +54,19 @@ down_graphite:
 setup: init build build_rabbitmq
 .PHONY: setup
 
-_deploy:
+_common_folders:
 	mkdir -p graphite
 	mkdir -p grafana_config
 	mkdir -p shared
 	mkdir -p shared/input
+	rm -rf shared/formatted || true
+	mkdir -p shared/formatted
+	rm -rf shared/scaled || true
+	mkdir -p shared/scaled
 	rm -rf shared/output || true
 	mkdir -p shared/output
+
+_deploy: _common_folders
 	MY_UID="$(shell id -u)" MY_GID="$(shell id -g)" docker stack deploy -c docker-compose.yaml ip_scala
 .PHONY: _deploy
 
@@ -142,13 +148,7 @@ build_remote: upload_jars
 	ssh efoppiano@atom.famaf.unc.edu.ar 'cd $(REMOTE_WORK_DIR) && make _build_remote'
 .PHONY: build_remote
 
-_deploy_remote:
-	mkdir -p graphite
-	mkdir -p grafana_config
-	mkdir -p shared
-	mkdir -p shared/input
-	rm -rf shared/output || true
-	mkdir -p shared/output
+_deploy_remote: _common_folders
 	MY_UID="$(shell id -u)" MY_GID="$(shell id -g)" docker stack deploy -c docker-compose-server.yaml ip_scala
 .PHONY: _deploy_remote
 

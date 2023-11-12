@@ -3,9 +3,9 @@ package dto
 
 import upickle.default
 
-case class FileName(s: String)
+case class FileName(path: String, name: String)
 
-val fileNameRW: default.ReadWriter[FileName] = default.readwriter[String].bimap[FileName](
-  fileName => fileName.s,
-  s => FileName(s)
+val fileNameRW: default.ReadWriter[FileName] = default.readwriter[(String, String)].bimap[FileName](
+  fileName => (fileName.path, fileName.name),
+  tuple => FileName(tuple(0), tuple(1) )
 )
