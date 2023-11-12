@@ -34,8 +34,8 @@ case class SizeWorker(inputQueue: String,
         val sourceFileName = input.s
         val sourceFileNameWithoutExtension = sourceFileName.split('.').head
         val targetFileName = s"${sourceFileNameWithoutExtension}_resized.png"
-        val sourceFilePath = s"./shared/$sourceFileName"
-        val targetFilePath = s"./shared/$targetFileName"
+        val sourceFilePath = s"./shared/output/$sourceFileName"
+        val targetFilePath = s"./shared/output/$targetFileName"
 
         try {
             ImageUtils.resize(sourceFilePath, targetFilePath, targetWidth, targetHeight, ImageFormat.Png())

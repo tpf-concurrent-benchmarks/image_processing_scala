@@ -64,6 +64,8 @@ _deploy:
 	mkdir -p graphite
 	mkdir -p grafana_config
 	mkdir -p shared
+	mkdir -p shared/input
+	mkdir -p shared/output
 	MY_UID="$(shell id -u)" MY_GID="$(shell id -g)" docker stack deploy -c docker-compose.yaml ip_scala
 .PHONY: _deploy
 
@@ -147,6 +149,11 @@ build_remote: upload_jars
 
 _deploy_remote:
 	mkdir -p graphite
+	mkdir -p grafana_config
+	mkdir -p shared
+	mkdir -p shared/input
+	rm -rf shared/output || true
+	mkdir -p shared/output
 	MY_UID="$(shell id -u)" MY_GID="$(shell id -g)" docker stack deploy -c docker-compose-server.yaml ip_scala
 .PHONY: _deploy_remote
 

@@ -30,8 +30,8 @@ case class FormatWorker(inputQueue: String,
         val sourceFileName = input.s
         val sourceFileNameWithoutExtension = sourceFileName.split('.').head
         val targetFileName = s"${sourceFileNameWithoutExtension}_formatted.png"
-        val sourceFilePath = s"./shared/$sourceFileName"
-        val targetFilePath = s"./shared/$targetFileName"
+        val sourceFilePath = s"./shared/input/$sourceFileName"
+        val targetFilePath = s"./shared/output/$targetFileName"
 
         try {
             ImageUtils.format(sourceFilePath, targetFilePath, ImageFormat.Png())

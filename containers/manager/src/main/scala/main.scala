@@ -70,7 +70,7 @@ def main(): Unit = {
     val queuesConfig = QueuesConfig(config)
 
     val startTime = System.currentTimeMillis()
-    val resultsToWait = sendWork(rabbitMq, "./shared")
+    val resultsToWait = sendWork(rabbitMq, "./shared/input")
 
     receiveResults(rabbitMq, queuesConfig.input, queuesConfig.endEvent, resultsToWait)
     val endTime = System.currentTimeMillis()
