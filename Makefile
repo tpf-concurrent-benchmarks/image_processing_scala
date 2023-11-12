@@ -19,7 +19,7 @@ jar: common_publish_local
 	done
 .PHONY: jar
 
-jar_local:
+jar_local: common_publish_local
 	for node in $(NODES); do \
   		cd ./containers/$$node && sbt assembly && cd ../.. && \
   		cp ./containers/$$node/target/scala-3.3.1/$$node.jar ./containers/$$node/$$node.jar; \
