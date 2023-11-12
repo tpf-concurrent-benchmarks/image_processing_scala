@@ -131,7 +131,7 @@ REMOTE_WORK_DIR = ip_scala/image_processing_scala
 
 upload_jars: jar
 	for node in $(NODES); do \
-  		scp containers/$$node/$$node.jar efoppiano@atom.famaf.unc.edu.ar:$$REMOTE_WORK_DIR/containers/$$node; \
+  		scp containers/$$node/$$node.jar efoppiano@atom.famaf.unc.edu.ar:${REMOTE_WORK_DIR}/containers/$$node; \
 	done
 .PHONY: upload_jars
 
