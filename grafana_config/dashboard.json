@@ -1,0 +1,1336 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 2,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 9,
+      "panels": [],
+      "title": "Row title",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "graphite",
+        "uid": "a52036d3-d09a-4aca-b144-6f694a955b23"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Results produced",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 13,
+        "x": 5,
+        "y": 1
+      },
+      "id": 7,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "be454a5d-7e54-49b8-9d69-bf1761845ed7"
+          },
+          "hide": false,
+          "refCount": 0,
+          "refId": "A",
+          "target": "aliasByTags(movingAverage(groupByNode(stats.$stage.*.results_produced, 1, 'average'), '$window'), 0)",
+          "textEditor": false
+        }
+      ],
+      "title": "Per node throughput - $stage worker - $window window",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "graphite",
+        "uid": "a52036d3-d09a-4aca-b144-6f694a955b23"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 1
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "be454a5d-7e54-49b8-9d69-bf1761845ed7"
+          },
+          "refCount": 0,
+          "refId": "A",
+          "target": "alias(groupByNodes(stats.gauges.cadvisor.ip_${language}_${stage}_worker.*.*.memory_usage, 'count'), '${stage}_worker')",
+          "textEditor": true
+        }
+      ],
+      "title": "Measured Workers - $stage worker",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "graphite",
+        "uid": "a52036d3-d09a-4aca-b144-6f694a955b23"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Results produced",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 3,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 13,
+        "x": 5,
+        "y": 9
+      },
+      "id": 10,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "be454a5d-7e54-49b8-9d69-bf1761845ed7"
+          },
+          "hide": false,
+          "refCount": 0,
+          "refId": "A",
+          "target": "movingAverage(aliasByTags(groupByNode(stats.$stage.*.results_produced, 1, 'sum'), 0), '$window')"
+        },
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "be454a5d-7e54-49b8-9d69-bf1761845ed7"
+          },
+          "hide": true,
+          "refCount": 0,
+          "refId": "D",
+          "target": "movingMin(aliasByTags(groupByNode(stats.$stage.*.results_produced, 1, 'sum'), 0), '$window')"
+        },
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "be454a5d-7e54-49b8-9d69-bf1761845ed7"
+          },
+          "hide": true,
+          "refCount": 0,
+          "refId": "E",
+          "target": "movingMax(aliasByTags(groupByNode(stats.$stage.*.results_produced, 1, 'sum'), 0), '$window')"
+        }
+      ],
+      "title": "Combined throughput - $stage worker - $window window",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {},
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "C"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "size_worker"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "I"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "resolution_worker"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "format_worker"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 13,
+        "x": 5,
+        "y": 18
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "be454a5d-7e54-49b8-9d69-bf1761845ed7"
+          },
+          "hide": true,
+          "refCount": 0,
+          "refId": "A",
+          "target": "alias(movingAverage(aggregate(stats.timers.size.*.work_time.mean_90, 'stddev'), '5min'), 'stddev')",
+          "textEditor": true
+        },
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "be454a5d-7e54-49b8-9d69-bf1761845ed7"
+          },
+          "hide": true,
+          "refCount": 0,
+          "refId": "B",
+          "target": "alias(movingAverage(aggregate(stats.timers.size.*.work_time.mean_90, 'avg'), '5min'), 'mean')",
+          "textEditor": true
+        },
+        {
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "$A/$B",
+          "hide": false,
+          "refId": "C",
+          "type": "math"
+        },
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "be454a5d-7e54-49b8-9d69-bf1761845ed7"
+          },
+          "hide": true,
+          "refCount": 0,
+          "refId": "G",
+          "target": "alias(movingAverage(aggregate(stats.timers.resolution.*.work_time.mean_90, 'stddev'), '5min'), 'stddev')",
+          "textEditor": true
+        },
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "be454a5d-7e54-49b8-9d69-bf1761845ed7"
+          },
+          "hide": true,
+          "refCount": 0,
+          "refId": "H",
+          "target": "alias(movingAverage(aggregate(stats.timers.resolution.*.work_time.mean_90, 'avg'), '5min'), 'mean')",
+          "textEditor": true
+        },
+        {
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "$G/$H",
+          "hide": false,
+          "refId": "I",
+          "type": "math"
+        },
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "be454a5d-7e54-49b8-9d69-bf1761845ed7"
+          },
+          "hide": true,
+          "refCount": 0,
+          "refId": "J",
+          "target": "alias(movingAverage(aggregate(stats.timers.format.*.work_time.mean_90, 'stddev'), '5min'), 'stddev')",
+          "textEditor": false
+        },
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "be454a5d-7e54-49b8-9d69-bf1761845ed7"
+          },
+          "hide": true,
+          "refCount": 0,
+          "refId": "K",
+          "target": "alias(movingAverage(aggregate(stats.timers.format.*.work_time.mean_90, 'avg'), '5min'), 'mean')",
+          "textEditor": false
+        },
+        {
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "$J/$K",
+          "hide": false,
+          "refId": "L",
+          "type": "math"
+        }
+      ],
+      "title": "Coefficient of variation - Work time",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "graphite",
+        "uid": "a52036d3-d09a-4aca-b144-6f694a955b23"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "size_worker"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "F"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "resolution_worker"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "I"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "format_worker"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 13,
+        "x": 5,
+        "y": 26
+      },
+      "id": 12,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "be454a5d-7e54-49b8-9d69-bf1761845ed7"
+          },
+          "hide": true,
+          "refCount": 0,
+          "refId": "A",
+          "target": "alias(movingAverage(aggregate(stats.size.*.results_produced, 'avg'), '5min'), 'mean')",
+          "textEditor": false
+        },
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "be454a5d-7e54-49b8-9d69-bf1761845ed7"
+          },
+          "hide": true,
+          "refCount": 0,
+          "refId": "B",
+          "target": "alias(movingAverage(aggregate(stats.size.*.results_produced, 'stddev'), '5min'), 'stddev')",
+          "textEditor": false
+        },
+        {
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "$B/$A",
+          "hide": false,
+          "refId": "C",
+          "type": "math"
+        },
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "be454a5d-7e54-49b8-9d69-bf1761845ed7"
+          },
+          "hide": true,
+          "refCount": 0,
+          "refId": "D",
+          "target": "alias(movingAverage(aggregate(stats.resolution.*.results_produced, 'avg'), '5min'), 'mean')",
+          "textEditor": false
+        },
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "be454a5d-7e54-49b8-9d69-bf1761845ed7"
+          },
+          "hide": true,
+          "refCount": 0,
+          "refId": "E",
+          "target": "alias(movingAverage(aggregate(stats.resolution.*.results_produced, 'stddev'), '5min'), 'stddev')",
+          "textEditor": false
+        },
+        {
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "$E/$D",
+          "hide": false,
+          "refId": "F",
+          "type": "math"
+        },
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "be454a5d-7e54-49b8-9d69-bf1761845ed7"
+          },
+          "hide": true,
+          "refCount": 0,
+          "refId": "G",
+          "target": "alias(movingAverage(aggregate(stats.format.*.results_produced, 'avg'), '5min'), 'mean')",
+          "textEditor": false
+        },
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "be454a5d-7e54-49b8-9d69-bf1761845ed7"
+          },
+          "hide": true,
+          "refCount": 0,
+          "refId": "H",
+          "target": "alias(movingAverage(aggregate(stats.format.*.results_produced, 'stddev'), '5min'), 'stddev')",
+          "textEditor": false
+        },
+        {
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "$H/$G",
+          "hide": false,
+          "refId": "I",
+          "type": "math"
+        }
+      ],
+      "title": "Coefficient of variation - Results produced",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "graphite",
+        "uid": "a52036d3-d09a-4aca-b144-6f694a955b23"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 13,
+        "x": 5,
+        "y": 34
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "be454a5d-7e54-49b8-9d69-bf1761845ed7"
+          },
+          "hide": false,
+          "refCount": 0,
+          "refId": "A",
+          "target": "aliasByTags(movingAverage(groupByNode(stats.gauges.cadvisor.ip_${language}_${stage}_worker.*.*.memory_usage, 3, 'sum'), '$window'), 0)",
+          "textEditor": true
+        }
+      ],
+      "title": "Memory Usage - $stage worker - $window window",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "graphite",
+        "uid": "a52036d3-d09a-4aca-b144-6f694a955b23"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 3,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "size_worker"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "F"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "resolution_worker"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "I"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "format_worker"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 13,
+        "x": 5,
+        "y": 42
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "be454a5d-7e54-49b8-9d69-bf1761845ed7"
+          },
+          "hide": true,
+          "refCount": 0,
+          "refId": "A",
+          "target": "movingAverage(aggregate(groupByNode(stats.gauges.cadvisor.ip_${language}_size_worker.*.*.cpu_usage_user, 4, 'sum'), 'avg'), '$window')",
+          "textEditor": false
+        },
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "be454a5d-7e54-49b8-9d69-bf1761845ed7"
+          },
+          "hide": true,
+          "refCount": 0,
+          "refId": "B",
+          "target": "movingAverage(aggregate(groupByNode(stats.gauges.cadvisor.ip_${language}_size_worker.*.*.cpu_usage_total, 4, 'sum'), 'avg'), '$window')",
+          "textEditor": false
+        },
+        {
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "$A/$B",
+          "hide": false,
+          "refId": "C",
+          "type": "math"
+        },
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "be454a5d-7e54-49b8-9d69-bf1761845ed7"
+          },
+          "hide": true,
+          "refCount": 0,
+          "refId": "D",
+          "target": "movingAverage(aggregate(groupByNode(stats.gauges.cadvisor.ip_${language}_resolution_worker.*.*.cpu_usage_user, 4, 'sum'), 'avg'), '$window')",
+          "textEditor": false
+        },
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "be454a5d-7e54-49b8-9d69-bf1761845ed7"
+          },
+          "hide": true,
+          "refCount": 0,
+          "refId": "E",
+          "target": "movingAverage(aggregate(groupByNode(stats.gauges.cadvisor.ip_${language}_resolution_worker.*.*.cpu_usage_total, 4, 'sum'), 'avg'), '$window')",
+          "textEditor": false
+        },
+        {
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "$D/$E",
+          "hide": false,
+          "refId": "F",
+          "type": "math"
+        },
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "be454a5d-7e54-49b8-9d69-bf1761845ed7"
+          },
+          "hide": true,
+          "refCount": 0,
+          "refId": "G",
+          "target": "movingAverage(aggregate(groupByNode(stats.gauges.cadvisor.ip_${language}_format_worker.*.*.cpu_usage_user, 4, 'sum'), 'avg'), '$window')",
+          "textEditor": false
+        },
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "be454a5d-7e54-49b8-9d69-bf1761845ed7"
+          },
+          "hide": true,
+          "refCount": 0,
+          "refId": "H",
+          "target": "movingAverage(aggregate(groupByNode(stats.gauges.cadvisor.ip_${language}_format_worker.*.*.cpu_usage_total, 4, 'sum'), 'avg'), '$window')",
+          "textEditor": false
+        },
+        {
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "$G/$H",
+          "hide": false,
+          "refId": "I",
+          "type": "math"
+        }
+      ],
+      "title": "CPU Usage (Workers)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "graphite",
+        "uid": "a52036d3-d09a-4aca-b144-6f694a955b23"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 13,
+        "x": 5,
+        "y": 50
+      },
+      "id": 11,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "be454a5d-7e54-49b8-9d69-bf1761845ed7"
+          },
+          "refId": "A",
+          "target": "stats.gauges.manager.completion_time"
+        }
+      ],
+      "title": "Completion Time - Manager",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 38,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "scala",
+          "value": "scala"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "language",
+        "options": [
+          {
+            "selected": true,
+            "text": "scala",
+            "value": "scala"
+          },
+          {
+            "selected": false,
+            "text": "cpp",
+            "value": "cpp"
+          },
+          {
+            "selected": false,
+            "text": "go",
+            "value": "go"
+          },
+          {
+            "selected": false,
+            "text": "julia",
+            "value": "julia"
+          },
+          {
+            "selected": false,
+            "text": "elixir",
+            "value": "elixir"
+          }
+        ],
+        "query": "scala,cpp,go,julia,elixir",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "5min",
+          "value": "5min"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "window",
+        "options": [
+          {
+            "selected": false,
+            "text": "1min",
+            "value": "1min"
+          },
+          {
+            "selected": false,
+            "text": "2min",
+            "value": "2min"
+          },
+          {
+            "selected": true,
+            "text": "5min",
+            "value": "5min"
+          },
+          {
+            "selected": false,
+            "text": "10min",
+            "value": "10min"
+          }
+        ],
+        "query": "1min,2min,5min,10min",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "format"
+          ],
+          "value": [
+            "format"
+          ]
+        },
+        "hide": 0,
+        "includeAll": false,
+        "multi": true,
+        "name": "stage",
+        "options": [
+          {
+            "selected": true,
+            "text": "format",
+            "value": "format"
+          },
+          {
+            "selected": false,
+            "text": "resolution",
+            "value": "resolution"
+          },
+          {
+            "selected": false,
+            "text": "size",
+            "value": "size"
+          }
+        ],
+        "query": "format,resolution,size",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      }
+    ]
+  },
+  "time": {
+    "from": "2023-11-11T21:33:13.911Z",
+    "to": "2023-11-11T21:45:04.043Z"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Image Processing Dashboard",
+  "uid": "image_processing_dashboard",
+  "version": 2,
+  "weekStart": ""
+}

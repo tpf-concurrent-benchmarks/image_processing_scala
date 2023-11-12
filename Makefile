@@ -5,12 +5,6 @@ init:
 CONTAINERS = $(shell ls ./containers)
 NODES = $(shell ls ./containers | grep -v common | grep -v rabbitmq)
 
-compile:
-	for container in $(CONTAINERS); do \
-		cd ./containers/$$container && sbt compile && cd ../..; \
-	done
-.PHONY: compile
-
 jar: common_publish_local
 	docker compose -f docker-compose-compilation.yaml up --build
 	docker compose -f docker-compose-compilation.yaml down
@@ -57,7 +51,7 @@ down_graphite:
 	fi
 .PHONY: down_graphite
 
-setup: init compile build build_rabbitmq
+setup: init build build_rabbitmq
 .PHONY: setup
 
 _deploy:
@@ -65,6 +59,7 @@ _deploy:
 	mkdir -p grafana_config
 	mkdir -p shared
 	mkdir -p shared/input
+	rm -rf shared/output || true
 	mkdir -p shared/output
 	MY_UID="$(shell id -u)" MY_GID="$(shell id -g)" docker stack deploy -c docker-compose.yaml ip_scala
 .PHONY: _deploy
