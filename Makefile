@@ -149,7 +149,7 @@ build_remote: upload_jars
 .PHONY: build_remote
 
 _deploy_remote: _common_folders
-	MY_UID="$(shell id -u)" MY_GID="$(shell id -g)" docker stack deploy -c docker-compose-server.yaml ip_scala
+	MY_UID="$(shell id -u)" MY_GID="$(shell id -g)" docker stack deploy -c docker-compose.yaml ip_scala
 .PHONY: _deploy_remote
 
 deploy_remote: remove_remote build_remote
