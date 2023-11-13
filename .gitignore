@@ -40,3 +40,7 @@ compilation/resolution_worker/
 compilation/size_worker/
 *.jar
 shared/
+
+imag*/
+birds*/
+*.zip
