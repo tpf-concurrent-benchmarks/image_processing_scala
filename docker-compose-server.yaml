@@ -28,6 +28,8 @@ services:
       -storage_driver_db="cadvisor"
       -storage_driver_buffer_duration="10s"
       --enable_metrics=cpu,cpuLoad,disk,diskIO,memory,network
+    ports:
+      - "8888:8080"
     depends_on:
       - graphite
     volumes:
@@ -47,6 +49,9 @@ services:
         source: ./containers/rabbitmq/definitions.json
         target: /definitions.json
         read_only: true
+    deploy:
+      restart_policy:
+        condition: none
     healthcheck:
       test: rabbitmq-diagnostics check_port_connectivity
       interval: 5s
