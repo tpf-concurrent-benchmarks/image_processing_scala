@@ -645,17 +645,7 @@
           },
           "refCount": 0,
           "refId": "A",
-          "target": "alias(movingAverage(aggregate(groupByNode(stats.gauges.cadvisor.ip_${language}_${stage}_worker.*.*.memory_usage, 4, 'sum'), 'avg'), '$window'), 'mean')"
-        },
-        {
-          "datasource": {
-            "type": "graphite",
-            "uid": "${DS_GRAPHITE}"
-          },
-          "hide": false,
-          "refCount": 0,
-          "refId": "B",
-          "target": "alias(movingAverage(aggregate(groupByNode(stats.gauges.cadvisor.ip_${language}_${stage}_worker.*.*.memory_usage, 4, 'sum'), 'min'), '$window'), 'min')",
+          "target": "alias(movingAverage(aggregate(groupByNode(stats.gauges.cadvisor.ip_${language}_${stage}_worker.*.*.memory_usage, 4, 'sum'), 'avg'), '$window'), 'mean')",
           "textEditor": true
         },
         {
@@ -667,6 +657,17 @@
           "refCount": 0,
           "refId": "C",
           "target": "alias(movingAverage(aggregate(groupByNode(stats.gauges.cadvisor.ip_${language}_${stage}_worker.*.*.memory_usage, 4, 'sum'), 'max'), '$window'), 'max')",
+          "textEditor": true
+        },
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
+          "hide": false,
+          "refCount": 0,
+          "refId": "B",
+          "target": "alias(movingAverage(aggregate(groupByNode(stats.gauges.cadvisor.ip_${language}_${stage}_worker.*.*.memory_usage, 4, 'sum'), 'min'), '$window'), 'min')",
           "textEditor": true
         }
       ],
@@ -732,7 +733,20 @@
           },
           "unit": "percentunit"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "mean"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 7,
@@ -746,7 +760,7 @@
           "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": false
+          "showLegend": true
         },
         "tooltip": {
           "mode": "single",
@@ -1637,7 +1651,7 @@
           "hide": false,
           "refCount": 0,
           "refId": "A",
-          "target": "alias(movingWindow(aggregate(groupByNode(stats.gauges.cadvisor.ip_${language}_format_worker.*.*.memory_usage, 4, 'sum'), 'avg'), '$window', 'average'), 'format_worker')",
+          "target": "alias(movingWindow(aggregate(groupByNode(stats.gauges.cadvisor.ip_${language}_format_worker.*.*.memory_usage, 4, 'sum'), 'avg'), '$window', 'average'), 'resolution_worker')",
           "textEditor": false
         },
         {
@@ -2105,7 +2119,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": false,
+  "refresh": "",
   "schemaVersion": 38,
   "tags": [],
   "templating": {
@@ -2190,7 +2204,7 @@
       },
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": [
             "format"
           ],
@@ -2227,13 +2241,13 @@
     ]
   },
   "time": {
-    "from": "2023-11-13T06:13:49.915Z",
-    "to": "2023-11-13T07:14:45.384Z"
+    "from": "now-15m",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Image Processing Dashboard",
   "uid": "image_processing_dashboard",
-  "version": 51,
+  "version": 5,
   "weekStart": ""
 }
