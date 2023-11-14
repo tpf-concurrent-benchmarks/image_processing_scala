@@ -4,7 +4,8 @@ services:
   graphite:
     image: graphiteapp/graphite-statsd:1.1.10-4
     volumes:
-      - "./statsd.config.js:/opt/statsd/config.js:ro"
+      - "./statsd.config.js:/opt/statsd/config/udp.js:ro"
+      - "./statsd.config.js:/opt/statsd/config/tcp.js:ro"
       - "./graphite.storage-schemas.conf:/opt/graphite/conf/storage-schemas.conf:ro"
       - "./graphite:/opt/graphite/storage/:rw"
     ports:
