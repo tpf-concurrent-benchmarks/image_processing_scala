@@ -1,0 +1,50 @@
+version: "3.7"
+
+services:
+  format_worker_compilation:
+    build:
+      context: ../compilation
+    command: sbt assembly
+    volumes:
+      - "../containers/format_worker/src:/app/src"
+      - "../containers/format_worker/build.sbt:/app/build.sbt"
+      - "../containers/format_worker/project/build.properties:/app/project/build.properties"
+      - "../containers/format_worker/project/plugins.sbt:/app/project/plugins.sbt"
+      - "~/.ivy2:/root/.ivy2"
+      - "../compilation/format_worker:/app/target"
+
+  resolution_worker_compilation:
+    build:
+      context: ../compilation
+    command: sbt assembly
+    volumes:
+      - "../containers/resolution_worker/src:/app/src"
+      - "../containers/resolution_worker/build.sbt:/app/build.sbt"
+      - "../containers/resolution_worker/project/build.properties:/app/project/build.properties"
+      - "../containers/resolution_worker/project/plugins.sbt:/app/project/plugins.sbt"
+      - "~/.ivy2:/root/.ivy2"
+      - "../compilation/resolution_worker:/app/target"
+
+  size_worker_compilation:
+    build:
+      context: ../compilation
+    command: sbt assembly
+    volumes:
+      - "../containers/size_worker/src:/app/src"
+      - "../containers/size_worker/build.sbt:/app/build.sbt"
+      - "../containers/size_worker/project/build.properties:/app/project/build.properties"
+      - "../containers/size_worker/project/plugins.sbt:/app/project/plugins.sbt"
+      - "~/.ivy2:/root/.ivy2"
+      - "../compilation/size_worker:/app/target"
+
+  manager_compilation:
+    build:
+      context: ../compilation
+    command: sbt assembly
+    volumes:
+      - "../containers/manager/src/:/app/src"
+      - "../containers/manager/build.sbt:/app/build.sbt"
+      - "../containers/manager/project/build.properties:/app/project/build.properties"
+      - "../containers/manager/project/plugins.sbt:/app/project/plugins.sbt"
+      - "~/.ivy2:/root/.ivy2"
+      - "../compilation/manager:/app/target"

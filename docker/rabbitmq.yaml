@@ -8,7 +8,7 @@ services:
       - "5672:5672"
     volumes:
       - type: bind
-        source: ./containers/rabbitmq/definitions.json
+        source: ../containers/rabbitmq/definitions.json
         target: /definitions.json
         read_only: true
     healthcheck:

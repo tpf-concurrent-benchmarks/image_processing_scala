@@ -1,0 +1,73 @@
+version: "3.7"
+
+services:
+  format_worker:
+    image: image_processing_scala_format_worker
+    depends_on:
+      - rabbitmq
+      - graphite
+    volumes:
+      - type: bind
+        source: ../shared
+        target: /app/shared
+        read_only: false
+    deploy:
+      replicas: ${FORMAT_WORKER_REPLICAS}
+      restart_policy:
+        condition: none
+    environment:
+      - LOCAL=${LOCAL}
+      - NODE_ID=format.worker_{{.Task.Slot}}
+
+  resolution_worker:
+    image: image_processing_scala_resolution_worker
+    depends_on:
+      - rabbitmq
+      - graphite
+    volumes:
+      - type: bind
+        source: ../shared
+        target: /app/shared
+        read_only: false
+    deploy:
+      replicas: ${RESOLUTION_WORKER_REPLICAS}
+      restart_policy:
+        condition: none
+    environment:
+      - LOCAL=${LOCAL}
+      - NODE_ID=resolution.worker_{{.Task.Slot}}
+
+  size_worker:
+    image: image_processing_scala_size_worker
+    depends_on:
+      - rabbitmq
+      - graphite
+    volumes:
+      - type: bind
+        source: ../shared
+        target: /app/shared
+        read_only: false
+    deploy:
+      replicas: ${SIZE_WORKER_REPLICAS}
+      restart_policy:
+        condition: none
+    environment:
+      - LOCAL=${LOCAL}
+      - NODE_ID=size.worker_{{.Task.Slot}}
+
+  manager:
+    image: image_processing_scala_manager
+    depends_on:
+      - rabbitmq
+      - graphite
+    volumes:
+      - type: bind
+        source: ../shared
+        target: /app/shared
+        read_only: false
+    deploy:
+      restart_policy:
+        condition: none
+    environment:
+      - LOCAL=${LOCAL}
+      - NODE_ID=manager
