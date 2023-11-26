@@ -29,7 +29,6 @@ case class FormatWorker(inputQueue: String,
         val sourcePath = input.path
         val sourceName = input.name
         val sourceFileName = s"$sourcePath/$sourceName"
-        println(s"Formatting $sourceFileName")
 
         val targetPath = "./shared/formatted"
         val sourceFileNameWithoutExtension = sourceName.split('.').head

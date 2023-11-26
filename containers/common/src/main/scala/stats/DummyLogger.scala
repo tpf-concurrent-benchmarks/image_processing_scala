@@ -20,7 +20,7 @@ object DummyLogger extends MetricsLogger {
         val endTime = System.currentTimeMillis()
 
         val duration = endTime - startTime
-        // println("Running " + metric + " took " + duration + " ms")
+        println("Running " + metric + " took " + duration + " ms")
 
         result
     }

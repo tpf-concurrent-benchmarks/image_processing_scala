@@ -33,7 +33,6 @@ case class ResolutionWorker(inputQueue: String,
         val sourcePath = input.path
         val sourceName = input.name
         val sourceFileName = s"$sourcePath/$sourceName"
-        println(s"Scaling $sourceFileName")
 
         val targetPath = "./shared/scaled"
         val targetFileName = s"$targetPath/$sourceName"

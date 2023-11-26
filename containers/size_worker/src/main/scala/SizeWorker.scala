@@ -33,7 +33,6 @@ case class SizeWorker(inputQueue: String,
         val sourcePath = input.path
         val sourceName = input.name
         val sourceFileName = s"$sourcePath/$sourceName"
-        println(s"Resizing $sourceFileName")
 
         val targetPath = "./shared/output"
         val targetFileName = s"$targetPath/$sourceName"
