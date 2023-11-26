@@ -44,3 +44,4 @@ shared/
 imag*/
 birds*/
 *.zip
+.make/
