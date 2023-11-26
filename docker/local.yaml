@@ -18,7 +18,7 @@ services:
         target: /app/shared
         read_only: false
     deploy:
-      replicas: 2
+      replicas: ${FORMAT_WORKER_REPLICAS}
       restart_policy:
         condition: none
     environment:
@@ -41,7 +41,7 @@ services:
         target: /app/shared
         read_only: false
     deploy:
-      replicas: 2
+      replicas: ${RESOLUTION_WORKER_REPLICAS}
       restart_policy:
         condition: none
     environment:
@@ -64,7 +64,7 @@ services:
         target: /app/shared
         read_only: false
     deploy:
-      replicas: 2
+      replicas: ${SIZE_WORKER_REPLICAS}
       restart_policy:
         condition: none
     environment:
@@ -87,7 +87,6 @@ services:
         target: /app/shared
         read_only: false
     deploy:
-      replicas: 0
       restart_policy:
         condition: none
     environment:
