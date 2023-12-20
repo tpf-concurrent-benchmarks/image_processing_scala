@@ -29,7 +29,7 @@ init:
 	touch .make/jar_dockerized
 
 jar: common_publish_local
-	if command -v sbt &> /dev/null; then \
+	if command -v sbt; then \
   		make .make/jar_native; \
 	else \
 		make .make/jar_dockerized; \
@@ -75,7 +75,7 @@ _common_folders:
 	rm -rf shared/output || true
 	mkdir -p shared/output
 
-deploy: remove down_rabbitmq common_publish_local build_rabbitmq _common_folders
+deploy: remove down_rabbitmq build build_rabbitmq _common_folders
 	until FORMAT_WORKER_REPLICAS=$(FORMAT_WORKER_REPLICAS) \
 		RESOLUTION_WORKER_REPLICAS=$(RESOLUTION_WORKER_REPLICAS) \
 		SIZE_WORKER_REPLICAS=$(SIZE_WORKER_REPLICAS) \
@@ -138,8 +138,13 @@ run_size_worker_local:
 .PHONY: run_size_worker_local
 
 .make/common_publish_local: $(CONTAINERS_FILES)
-	cd ./containers/common && sbt publishLocal
-	cd ../..
+	if command -v sbt; then \
+		cd ./containers/common && sbt publishLocal; \
+		cd ../..; \
+	else \
+		docker compose -f docker/common_compilation.yaml up --build; \
+		docker compose -f docker/common_compilation.yaml down; \
+	fi
 	touch .make/common_publish_local
 
 common_publish_local: .make/common_publish_local
@@ -197,3 +202,14 @@ tunnel_cadvisor:
 tunnel_grafana:
 	ssh -L 8081:127.0.0.1:8081 $(SERVER_USER)@$(SERVER_HOST)
 .PHONY: tunnel_grafana
+
+# Cloud specific
+
+deploy_cloud: remove
+	mkdir -p graphite
+	mkdir -p grafana_config
+	until WORKER_REPLICAS=$(WORKER_REPLICAS) docker stack deploy \
+ 	-c docker/rabbitmq.yaml \
+	-c docker/common.yaml \
+	-c docker/server.yaml ip_scala; do sleep 1; done
+.PHONY: deploy_cloud
