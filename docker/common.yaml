@@ -6,6 +6,7 @@ services:
     volumes:
       - "../statsd.config.js:/opt/statsd/config/udp.js:ro"
       - "../statsd.config.js:/opt/statsd/config/tcp.js:ro"
+      - "../graphite.blacklist.conf:/opt/graphite/conf/blacklist.conf:ro"
       - "../graphite.carbon.conf:/opt/graphite/conf/carbon.conf:ro"
       - "../graphite.storage-schemas.conf:/opt/graphite/conf/storage-schemas.conf:ro"
       - "../graphite:/opt/graphite/storage/:rw"
