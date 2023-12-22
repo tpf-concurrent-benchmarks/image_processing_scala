@@ -2,48 +2,21 @@ FORMAT_WORKER_REPLICAS = 2
 RESOLUTION_WORKER_REPLICAS = 2
 SIZE_WORKER_REPLICAS = 2
 REMOTE_WORK_DIR = ip_scala/image_processing_scala
-CONTAINERS_FILES = $(shell find containers -type f -not -path "*/target/*")
 CONTAINERS = $(shell ls ./containers)
 NODES = $(shell ls ./containers | grep -v common | grep -v rabbitmq)
 SERVER_USER = efoppiano
 SERVER_HOST = atom.famaf.unc.edu.ar
-$(shell mkdir -p .make)
 
 init:
-	mkdir -p .make
 	docker swarm init
 .PHONY: init
 
-.make/jar_native: $(CONTAINERS_FILES)
-	for node in $(NODES); do \
-  		cd ./containers/$$node && sbt assembly && cd ../.. && \
-  		cp ./containers/$$node/target/scala-3.3.1/$$node.jar ./containers/$$node/$$node.jar; \
-	done
-	touch .make/jar_native
-
-.make/jar_dockerized: $(CONTAINERS_FILES)
-	docker compose -f docker-compose-compilation.yaml up --build
-	docker compose -f docker-compose-compilation.yaml down
-	for node in $(NODES); do \
-  		cp ./compilation/$$node/scala-3.3.1/$$node.jar ./containers/$$node/$$node.jar; \
-	done
-	touch .make/jar_dockerized
-
-jar: common_publish_local
-	if command -v sbt; then \
-  		make .make/jar_native; \
-	else \
-		make .make/jar_dockerized; \
-	fi
-
-.make/build: $(CONTAINERS_FILES)
+build:
 	for node in $(CONTAINERS); do \
-  		docker rmi image_processing_scala_$$node -f || true; \
-  		docker build -t image_processing_scala_$$node -f ./containers/$$node/Dockerfile ./containers/$$node; \
+		docker rmi image_processing_scala_$$node -f || true; \
+		docker build -t image_processing_scala_$$node -f ./containers/$$node/Dockerfile ./containers; \
 	done
-	touch .make/build
-
-build: jar .make/build
+.PHONY: build
 
 build_rabbitmq:
 	if ! docker images | grep -q rostov_rabbitmq; then \
@@ -75,26 +48,19 @@ _common_folders:
 	mkdir -p shared/scaled
 	rm -rf shared/output || true
 	mkdir -p shared/output
+.PHONY: _common_folders
 
 deploy: remove down_rabbitmq build build_rabbitmq _common_folders
-	until FORMAT_WORKER_REPLICAS=$(FORMAT_WORKER_REPLICAS) \
-		RESOLUTION_WORKER_REPLICAS=$(RESOLUTION_WORKER_REPLICAS) \
-		SIZE_WORKER_REPLICAS=$(SIZE_WORKER_REPLICAS) \
-		docker stack deploy \
-		-c docker/rabbitmq.yaml \
-		-c docker/common.yaml \
-		-c docker/local.yaml ip_scala; do sleep 1; done
+	until \
+	FORMAT_WORKER_REPLICAS=$(FORMAT_WORKER_REPLICAS) \
+	RESOLUTION_WORKER_REPLICAS=$(RESOLUTION_WORKER_REPLICAS) \
+	SIZE_WORKER_REPLICAS=$(SIZE_WORKER_REPLICAS) \
+	docker stack deploy \
+	-c docker/rabbitmq.yaml \
+	-c docker/common.yaml \
+	-c docker/server.yaml ip_scala; \
+	do sleep 1; done
 .PHONY: deploy
-
-deploy_jars: remove down_rabbitmq build build_rabbitmq _common_folders
-	until FORMAT_WORKER_REPLICAS=$(FORMAT_WORKER_REPLICAS) \
-		RESOLUTION_WORKER_REPLICAS=$(RESOLUTION_WORKER_REPLICAS) \
-		SIZE_WORKER_REPLICAS=$(SIZE_WORKER_REPLICAS) \
-		docker stack deploy \
-		-c docker/rabbitmq.yaml \
-		-c docker/common.yaml \
-		-c docker/server.yaml ip_scala; do sleep 1; done
-.PHONY: deploy_jars
 
 remove:
 	if docker stack ls | grep -q ip_scala; then \
@@ -138,48 +104,17 @@ run_size_worker_local:
 	cd ../..
 .PHONY: run_size_worker_local
 
-.make/common_publish_local: $(CONTAINERS_FILES)
-	if command -v sbt; then \
-		cd ./containers/common && sbt publishLocal; \
-		cd ../..; \
-	else \
-		docker compose -f docker/common_compilation.yaml up --build; \
-		docker compose -f docker/common_compilation.yaml down; \
-	fi
-	touch .make/common_publish_local
-
-common_publish_local: .make/common_publish_local
+common_publish_local:
+	cd ./containers/common && sbt publishLocal
+	cd ../..
+.PHONY: common_publish_local
 
 # Server specific
 
-.make/upload_jars: $(shell find containers -type f -name "*.jar")
-	for node in $(NODES); do \
-  		scp containers/$$node/$$node.jar efoppiano@atom.famaf.unc.edu.ar:${REMOTE_WORK_DIR}/containers/$$node; \
-  	done
-	touch .make/upload_jars
-
-upload_jars: build .make/upload_jars
-
 ## Use *_remote if you are running them from your local machine
 
-_build_remote:
-	for node in $(NODES); do \
-  		docker rmi image_processing_scala_$$node -f || true; \
-  		docker build -t image_processing_scala_$$node -f ./containers/$$node/Dockerfile ./containers/$$node; \
-	done
-.PHONY: _build_remote
-
-_deploy_remote: remove _common_folders _build_remote
-	until FORMAT_WORKER_REPLICAS=$(FORMAT_WORKER_REPLICAS) \
-		RESOLUTION_WORKER_REPLICAS=$(RESOLUTION_WORKER_REPLICAS) \
-		SIZE_WORKER_REPLICAS=$(SIZE_WORKER_REPLICAS) \
-		docker stack deploy \
-		-c docker/rabbitmq.yaml \
-		-c docker/common.yaml \
-		-c docker/server.yaml ip_scala; do sleep 1; done
-
-deploy_remote: upload_jars
-	ssh $(SERVER_USER)@$(SERVER_HOST) 'cd $(REMOTE_WORK_DIR) && make _deploy_remote'
+deploy_remote:
+	ssh $(SERVER_USER)@$(SERVER_HOST) 'cd $(REMOTE_WORK_DIR) && make deploy'
 .PHONY: deploy_remote
 
 remove_remote:
@@ -206,14 +141,27 @@ tunnel_grafana:
 
 # Cloud specific
 
+_mount_nfs:
+	mkdir -p shared
+	sudo mount -o rw,intr $(NFS_SERVER_IP):/$(NFS_SERVER_PATH) ./shared
+.PHONY: _mount_nfs
+
 # Requires the following env variables:
 # - NFS_SERVER_IP
 # - NFS_SERVER_PATH
 deploy_cloud: remove
+	NFS_SERVER_IP=$(NFS_SERVER_IP) NFS_SERVER_PATH=$(NFS_SERVER_PATH) make _mount_nfs
+	sudo make _common_folders
 	mkdir -p graphite
 	mkdir -p grafana_config
-	until WORKER_REPLICAS=$(WORKER_REPLICAS) docker stack deploy \
- 	-c docker/rabbitmq.yaml \
+	until \
+	FORMAT_WORKER_REPLICAS=$(FORMAT_WORKER_REPLICAS) \
+	RESOLUTION_WORKER_REPLICAS=$(RESOLUTION_WORKER_REPLICAS) \
+	SIZE_WORKER_REPLICAS=$(SIZE_WORKER_REPLICAS) \
+	NFS_SERVER_IP=$(NFS_SERVER_IP) \
+	NFS_SERVER_PATH=$(NFS_SERVER_PATH) \
+	docker stack deploy \
+	-c docker/rabbitmq.yaml \
 	-c docker/common.yaml \
 	-c docker/cloud.yaml ip_scala; do sleep 1; done
 .PHONY: deploy_cloud
