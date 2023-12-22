@@ -205,11 +205,14 @@ tunnel_grafana:
 
 # Cloud specific
 
+# Requires the following env variables:
+# - NFS_SERVER_IP
+# - NFS_SERVER_PATH
 deploy_cloud: remove
 	mkdir -p graphite
 	mkdir -p grafana_config
 	until WORKER_REPLICAS=$(WORKER_REPLICAS) docker stack deploy \
  	-c docker/rabbitmq.yaml \
 	-c docker/common.yaml \
-	-c docker/server.yaml ip_scala; do sleep 1; done
+	-c docker/cloud.yaml ip_scala; do sleep 1; done
 .PHONY: deploy_cloud

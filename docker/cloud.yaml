@@ -1,0 +1,69 @@
+version: "3.7"
+
+services:
+  format_worker:
+    image: image_processing_scala_format_worker
+    depends_on:
+      - rabbitmq
+      - graphite
+    volumes:
+      - "nfs:/app/shared"
+    deploy:
+      replicas: ${FORMAT_WORKER_REPLICAS}
+      restart_policy:
+        condition: none
+    environment:
+      - LOCAL=${LOCAL}
+      - NODE_ID=format.worker_{{.Task.Slot}}
+
+  resolution_worker:
+    image: image_processing_scala_resolution_worker
+    depends_on:
+      - rabbitmq
+      - graphite
+    volumes:
+      - "nfs:/app/shared"
+    deploy:
+      replicas: ${RESOLUTION_WORKER_REPLICAS}
+      restart_policy:
+        condition: none
+    environment:
+      - LOCAL=${LOCAL}
+      - NODE_ID=resolution.worker_{{.Task.Slot}}
+
+  size_worker:
+    image: image_processing_scala_size_worker
+    depends_on:
+      - rabbitmq
+      - graphite
+    volumes:
+      - "nfs:/app/shared"
+    deploy:
+      replicas: ${SIZE_WORKER_REPLICAS}
+      restart_policy:
+        condition: none
+    environment:
+      - LOCAL=${LOCAL}
+      - NODE_ID=size.worker_{{.Task.Slot}}
+
+  manager:
+    image: image_processing_scala_manager
+    depends_on:
+      - rabbitmq
+      - graphite
+    volumes:
+      - "nfs:/app/shared"
+    deploy:
+      restart_policy:
+        condition: none
+    environment:
+      - LOCAL=${LOCAL}
+      - NODE_ID=manager
+
+volumes:
+  nfs:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=${NFS_SERVER_IP},rw,nolock,hard,rsize=65536,wsize=65536
+      device: ":${NFS_SERVER_PATH}"
