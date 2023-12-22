@@ -7,6 +7,7 @@ CONTAINERS = $(shell ls ./containers)
 NODES = $(shell ls ./containers | grep -v common | grep -v rabbitmq)
 SERVER_USER = efoppiano
 SERVER_HOST = atom.famaf.unc.edu.ar
+$(shell mkdir -p .make)
 
 init:
 	mkdir -p .make
