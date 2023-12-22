@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   rabbitmq:
-    image: rostov_rabbitmq
+    image: efoppiano/rostov_rabbitmq:v0.1
     ports:
       - "15672:15672"
       - "5672:5672"
@@ -17,3 +17,7 @@ services:
       timeout: 3s
       retries: 10
       start_period: 50s
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
