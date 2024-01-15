@@ -65,7 +65,6 @@ services:
 
 volumes:
   nfs:
-    external: true
     driver: local
     driver_opts:
       type: nfs
