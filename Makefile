@@ -48,7 +48,7 @@ _common_folders:
 
 	mv shared/formatted shared/formatted.old || true
 	rm -rf shared/formatted &
-	mkdir -p shared/scaled
+	mkdir -p shared/formatted
 
 	mv shared/scaled shared/scaled.old || true
 	rm -rf shared/scaled &
@@ -152,7 +152,7 @@ tunnel_grafana:
 
 _mount_nfs:
 	mkdir -p shared
-	sudo mount -o rw,intr $(NFS_SERVER_IP):/$(NFS_SERVER_PATH) ./shared
+	sudo mount -o rw,soft $(NFS_SERVER_IP):/$(NFS_SERVER_PATH) ./shared
 .PHONY: _mount_nfs
 
 # Requires the following env variables:
