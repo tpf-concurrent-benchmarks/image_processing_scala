@@ -65,3 +65,10 @@ The objective of this project is to benchmark the language on a real-world distr
 - Graphite: [http://127.0.0.1:8080](http://127.0.0.1:8080)
 - RabbitMq: [http://127.0.0.1:15672/#/](http://127.0.0.1:15672/#/) (user: guest, password: guest)
 - Logs
+
+### Libraries
+
+- [typesafe-config](https://github.com/lightbend/config)
+- [scrimage](https://github.com/sksamuel/scrimage)
+- [akka-rabbitmq](https://github.com/ShellRechargeSolutionsEU/akka-rabbitmq)
+- [java-statsd-client](https://github.com/tim-group/java-statsd-client)
