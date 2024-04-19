@@ -8,7 +8,7 @@ SERVER_USER = efoppiano
 SERVER_HOST = atom.famaf.unc.edu.ar
 
 init:
-	docker swarm init
+	docker swarm init || true
 .PHONY: init
 
 build:
@@ -34,7 +34,7 @@ down_rabbitmq:
 	fi
 .PHONY: down_rabbitmq
 
-setup: init build build_rabbitmq
+setup: init build build_rabbitmq _common_folders
 .PHONY: setup
 
 _common_folders:
@@ -58,6 +58,9 @@ _common_folders:
 	rm -rf shared/output &
 	mkdir -p shared/output
 .PHONY: _common_folders
+
+template_data: _common_folders
+	wget https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg -P shared/input/
 
 deploy: remove down_rabbitmq build build_rabbitmq _common_folders
 	until \

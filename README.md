@@ -1,39 +1,67 @@
 # Image Processing Pipeline - Scala
 
+## Objective
+
 This is a Scala implementation of an image processing pipeline under [common specifications](https://github.com/tpf-concurrent-benchmarks/docs/tree/main/image_processing) defined for multiple languages.
 
 The objective of this project is to benchmark the language on a real-world distributed system.
 
 ## Deployment
 
-The project is deployed using docker swarm, `make init` initializes it.
+### Requirements
 
-`make setup` will make other required initializations.
+- [Docker >3](https://www.docker.com/) (needs docker swarm)
+- For local development:
+  - [Java 11](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)
+  - [Scala 3.3.1](https://www.scala-lang.org/download/)
+  - [sbt 1.9.6](https://www.scala-sbt.org/)
 
-`make common_publish_local` publishes the common packets to the local maven repository.
+### Configuration
 
-### Local development
+- **Number of replicas:** `FORMAT_WORKER_REPLICAS`, `RESOLUTION_WORKER_REPLICAS` and `SIZE_WORKER_REPLICAS` constants are defined in the `Makefile` file.
+- **Manager config:** in `containers/manager/src/main/resources/manager.conf` you can define (this config is built into the container):
+  - middleware config (rabbitmq addres, credentials, etc)
+  - metrics config (graphite address)
 
-There are make scripts to run rabbit, graphana, manager and worker independently.
-Such as: `run_rabbitmq`, `run_graphite`, `run_manager_local`, `run_worker_local`
+### Commands
 
-### Local deployment
+#### Startup
 
-`make build` builds the docker images.
+- `make setup` will make required initializations, equivalent to:
+  - `make init`: starts docker swarm
+  - `build_rabbitmq`: builds rabbitmq image
+  - `make build`: builds manager and worker images
+- `template_data`: downloads test image into the input folder
 
-`make deploy` deploys the system.
+#### Run
 
-### Remote deployment
+- `make deploy`: deploys the manager and worker services locally, alongside with Graphite, Grafana and cAdvisor.
+- `make remove`: removes all services (stops the swarm)
 
-`make build server` builds the docker images on the server.
+> There are make scripts to run rabbit, graphana, manager and worker independently.
+> Such as: `run_rabbitmq`, `run_graphite`, `run_manager_local`, `run_worker_local`
 
-`make deploy server` deploys the system on the server.
+#### Logs
 
-There are make scripts to tunnel the services such as: `tunnel_rabbitmq`, `tunnel_graphite`, `tunnel_cadvisor`, `tunnel_grafana`
+- `make manager_logs`: shows the logs of the manager service
+- `make worker_logs`: shows the logs of the worker service
+
+#### Local development
+
+- `make common_publish_local` publishes the common packets to the local maven repository.
+- `run_manager_local` and `run_worker_local` can be used to run the manager and worker services locally.
+
+#### Remote deployment
+
+- `make deploy_remote` builds and deploys the system on the server.
+
+> There are make scripts to tunnel the services such as: `tunnel_rabbitmq`, `tunnel_graphite`, `tunnel_cadvisor`, `tunnel_grafana`.
 
 > This will require ssh access to the server
 
-## Implementation details
+### Monitoring
 
-- The system uses RabbitMQ as a MOM to distribute the tasks to the workers.
-- A work queue is defined for each stage of the pipeline.
+- Grafana: [http://127.0.0.1:8081](http://127.0.0.1:8081)
+- Graphite: [http://127.0.0.1:8080](http://127.0.0.1:8080)
+- RabbitMq: [http://127.0.0.1:15672/#/](http://127.0.0.1:15672/#/) (user: guest, password: guest)
+- Logs
