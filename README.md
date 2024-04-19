@@ -66,7 +66,7 @@ The objective of this project is to benchmark the language on a real-world distr
 - RabbitMq: [http://127.0.0.1:15672/#/](http://127.0.0.1:15672/#/) (user: guest, password: guest)
 - Logs
 
-### Libraries
+## Libraries
 
 - [typesafe-config](https://github.com/lightbend/config)
 - [scrimage](https://github.com/sksamuel/scrimage)
