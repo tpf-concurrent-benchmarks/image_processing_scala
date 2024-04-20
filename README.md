@@ -44,7 +44,7 @@ The objective of this project is to benchmark the language on a real-world distr
 #### Logs
 
 - `make manager_logs`: shows the logs of the manager service
-- `make worker_logs`: shows the logs of the worker service
+- `make format_logs`, `make res_logs`, `make size_logs`: shows the logs of the worker services
 
 #### Local development
 
