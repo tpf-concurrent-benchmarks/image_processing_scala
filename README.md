@@ -31,7 +31,7 @@ The objective of this project is to benchmark the language on a real-world distr
   - `make init`: starts docker swarm
   - `build_rabbitmq`: builds rabbitmq image
   - `make build`: builds manager and worker images
-- `template_data`: downloads test image into the input folder
+- `make template_data`: downloads test image into the input folder
 
 #### Run
 
